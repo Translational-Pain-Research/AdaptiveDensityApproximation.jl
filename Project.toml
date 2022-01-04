@@ -1,0 +1,13 @@
+name = "AdaptiveDensityApproximation"
+uuid = "56a9bb0d-c37d-45c9-8e6c-6c1c1baae5c6"
+authors = ["Dominik Tschimmel <dominik.tschimmel.contact@gmail.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

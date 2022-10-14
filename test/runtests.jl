@@ -1,6 +1,7 @@
-using AdaptiveDensityApproximation
-using Test
+include("Setup.jl")
 
 @testset "AdaptiveDensityApproximation.jl" begin
-    # Write your tests here.
+    include("IntervalCuboidMethods.jl")
+    include("BlockMethods.jl")
+    include("GridMethods.jl")
 end

@@ -1,4 +1,6 @@
-@testset "OneDimBlock" begin
+@testset "Operations on OneDimBlock" begin
+
+	# Define Blocks for the tests.
 	left = ADA.OneDimBlock("left",ADA.Interval(1,2),["right"],1)
 	right = ADA.OneDimBlock("right",ADA.Interval(2,3),["left"],1)
 	isolated = ADA.OneDimBlock("isolated",ADA.Interval(5,6),[],1)
@@ -43,7 +45,9 @@ end
 
 
 
-@testset "Block" begin
+@testset "Operations on Block" begin
+
+	# Define Blocks for the tests.
 	middle = ADA.Block("middle",ADA.Cuboid([ADA.Interval(1,2),ADA.Interval(1,2)]), ["top", "right"],1)
 	top = ADA.Block("top",ADA.Cuboid([ADA.Interval(1,2),ADA.Interval(2,3)]), ["middle"],1)
 	right = ADA.Block("right",ADA.Cuboid([ADA.Interval(2,3),ADA.Interval(1,2)]), ["middle"],1)
@@ -66,29 +70,36 @@ end
 	end
 
 	@testset "Point contained" begin
-		@test ADA.in_block([1.5,1.5],middle)
-		@test !ADA.in_block([0.5,1.5],middle)
-		@test !ADA.in_block([2.5,1.5],middle)
-		@test !ADA.in_block([1.5,0.5],middle)
-		@test !ADA.in_block([1.5,2.5],middle)
-		@test !ADA.in_block([2.5,2.5],middle)
-		@test !ADA.in_block([0.5,0.5],middle)
+		@test ADA.in_block([1.5,1.5],middle)  # contained
+		@test !ADA.in_block([0.5,1.5],middle) # left
+		@test !ADA.in_block([2.5,1.5],middle) # right
+		@test !ADA.in_block([1.5,0.5],middle) # below
+		@test !ADA.in_block([1.5,2.5],middle) # top
+		@test !ADA.in_block([2.5,2.5],middle) # top right
+		@test !ADA.in_block([0.5,2.5],middle) # top left
+		@test !ADA.in_block([0.5,0.5],middle) # bottom left
+		@test !ADA.in_block([2.5,0.5],middle) # bottom right
 	end
 
 	@testset "Point above" begin
-		@test !ADA.above_block([1.5,1.5],middle)
-		@test !ADA.above_block([0.5,1.5],middle)
-		@test !ADA.above_block([2.5,1.5],middle)
-		@test !ADA.above_block([1.5,0.5],middle)
-		@test !ADA.above_block([1.5,2.5],middle)
-		@test ADA.above_block([2.5,2.5],middle)
-		@test !ADA.above_block([0.5,0.5],middle)
+		# above_block is true only if for every dimension the component of the point is above the respective interval.
+		@test !ADA.above_block([1.5,1.5],middle) # contained
+		@test !ADA.above_block([0.5,1.5],middle) # left
+		@test !ADA.above_block([2.5,1.5],middle) # right
+		@test !ADA.above_block([1.5,0.5],middle) # bottom
+		@test !ADA.above_block([1.5,2.5],middle) # top
+		@test !ADA.above_block([0.5,2.5],middle) # top left
+		@test ADA.above_block([2.5,2.5],middle)  # top right
+		@test !ADA.above_block([0.5,0.5],middle) # bottom left
+		@test !ADA.above_block([2.5,0.5],middle) # bottom right
 	end
 
 	@testset "Neighboring" begin
+		# neighboring blocks
 		@test symmetric_test(true, ADA.check_neighboring, middle,top)
 		@test symmetric_test(true, ADA.check_neighboring, middle,right)
 		
+		# non-neighboring blocks
 		@test symmetric_test(false, ADA.check_neighboring, middle,isolated)
 		@test symmetric_test(false, ADA.check_neighboring, top,isolated)
 		@test symmetric_test(false, ADA.check_neighboring, right,isolated)

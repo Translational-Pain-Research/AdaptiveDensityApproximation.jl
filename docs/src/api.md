@@ -1,14 +1,20 @@
 # API
 
-## Creating new grids
+## Create new grids
 
 
 ```@docs
 create_grid
 ```
 
+## Approximate density functions
 
-## Importing and Exporting
+```@docs
+approximate_density!
+```
+
+
+## Import and Export
 
 
 ```@docs
@@ -24,14 +30,9 @@ import_weights!
 ```
 
 
-## Approximate functions
-
-```@docs
-approximate_density!
-```
 
 
-## Refine grid
+## Refine a grid
 
 
 ```@docs 
@@ -43,12 +44,42 @@ refine!
 subdivide!
 ```
 
-## Integration and integral models
 
+## Restrict the grid domain
+
+```@docs
+restrict_domain!
+```
+
+```@docs
+select_indices
+```
+
+## Simple calculations
+
+```@docs
+sum(::Union{AdaptiveDensityApproximation.Grid, AdaptiveDensityApproximation.OneDimGrid})
+```
+
+```@docs
+sum(::Function,::Union{AdaptiveDensityApproximation.Grid, AdaptiveDensityApproximation.OneDimGrid})
+```
+
+```@docs
+prod(::Union{AdaptiveDensityApproximation.Grid, AdaptiveDensityApproximation.OneDimGrid})
+```
+
+```@docs
+prod(::Function,::Union{AdaptiveDensityApproximation.Grid, AdaptiveDensityApproximation.OneDimGrid})
+```
 
 ```@docs
 integrate
 ```
+
+## Integral models
+
+
 
 ```@docs
 integral_model
@@ -68,4 +99,8 @@ get_cdf
 
 ```@docs
 get_slice
+```
+
+```@docs
+dimension
 ```

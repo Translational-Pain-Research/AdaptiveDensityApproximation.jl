@@ -1,43 +1,49 @@
 @testset "Refine: 1-dim" begin
 
-	# Test refine! in detail.
 	grid = named_1d_grid()
-	custom_variation = (center,volume,weight,centers,volumes,weights) -> maximum(weights) - weight
-	returned_grid, change_indices = refine!(grid, block_variation = custom_variation, selection = minimum)
 
-	@test !("a_right" in collect(keys(grid)))
+	# Test both custom block_variation and custom selection.
+	custom_variation = (center,volume,weight,centers,volumes,weights) -> weight 
+	returned_grid, change_indices = refine!(grid, block_variation = custom_variation, selection = minimum) 
+
+	# selection = minimum -> replace block with smallest weight.
+	@test !("b_left" in collect(keys(grid)))
 	@test length(grid) == 3
 
 
 	# Test return values.
 	@test returned_grid == grid
-	@test change_indices == [2,3]
+	@test change_indices == [1,2]
 	
 	# Test properties of the subdivided grid.
-	target_centers = Set([1.5,2.25,2.75])
-	target_volumes = Set([0.5,1])
-	target_weights = Set([1,2])
+	target_centers = [1.25,1.75,2.5]
+	target_volumes = [0.5,0.5,1]
+	target_weights = [1,1,2]
 	standard_gird_tests(grid,target_centers,target_volumes,target_weights)
 
 
+	# Test weight_splitting.
+	grid = named_1d_grid()
+	refine!(grid, block_variation = custom_variation, selection = minimum, split_weights = true) 
+	target_weights = [0.5,0.5,2]
+	standard_gird_tests(grid,target_centers,target_volumes,target_weights)
 
 
-
-	# Test default block variation (should replace both blocks in this case).
+	# Test default block variation (should replace both blocks).
 	grid = named_1d_grid()
 	refine!(grid)
 	@test !("b_left" in collect(keys(grid))) && !("a_right" in collect(keys(grid)) )
 	@test length(grid) == 4
 
 
-	# Test volume selection (should replace both blocks in this case).
-	custom_variation =(center,volume,weight,centers,volumes,weights) -> volume + maximum(volume)
+	# Test volume arguments (should replace both blocks in this case).
+	custom_variation =(center,volume,weight,centers,volumes,weights) -> maximum(volumes) - volume
 	grid = named_1d_grid()
 	refine!(grid, block_variation = custom_variation)
 	@test !("b_left" in collect(keys(grid))) && !("a_right" in collect(keys(grid)) )
 	@test length(grid) == 4
 
-	# Test center selection (should replace left in this case).
+	# Test center arguments (should replace left block).
 	custom_variation = (center,volume,weight,centers,volumes,weights) -> maximum(centers) - center
 	grid = named_1d_grid()
 	refine!(grid, block_variation = custom_variation)
@@ -49,28 +55,36 @@ end
 
 @testset "Refine: 2-dim" begin
 
-	# Test refine! in detail.
 	grid = named_2d_grid()
-	custom_variation(center,volume,weight,centers,volumes,weights) = weight
-	returned_grid, change_indices = refine!(grid, block_variation = custom_variation)
 
-	# Block "bottom_right" should be replaced by two smaller blocks.
-	@test !("x_bottom_right" in collect(keys(grid)))
+	# Test both custom block_variation and custom selection.
+	custom_variation = (center,volume,weight,centers,volumes,weights) -> weight
+	returned_grid, change_indices = refine!(grid, block_variation = custom_variation, selection = minimum)
+
+	# Block "top_left" should be replaced by 4 smaller blocks.
+	@test !("b_top_left" in collect(keys(grid)))
 	@test length(grid) == 7
 
 	# Test return values.
 	@test returned_grid == grid
 	# Test change_indices based on block weights, which remain unchanged by refine/subdivide.
-	@test export_weights(grid)[change_indices] == [4,4,4,4]
+	@test export_weights(grid)[change_indices] == [1,1,1,1]
 
 	
 	# Test properties of the subdivided grid.
-	target_centers = Set([[1.5,1.5],[2.5,2.5],[1.5,2.5],[2.25,1.25],[2.25,1.75],[2.75,1.25],[2.75,1.75]])
-	target_volumes = Set([0.25,1])
-	target_weights = Set([1,2,3,4])
+	target_centers = [[1.25,2.25],[1.25,2.75],[1.5,1.5],[1.75,2.25],[1.75,2.75],[2.5,1.5],[2.5,2.5]]
+	target_volumes = [0.25,0.25,1,0.25,0.25,1,1]
+	target_weights = [1,1,3,1,1,4,2]
 	standard_gird_tests(grid,target_centers,target_volumes,target_weights)
 
-	# Test default block variation (should replace all blocks in this case).
+	# Test weight_splitting.
+	grid = named_2d_grid()
+	refine!(grid, block_variation = custom_variation, selection = minimum, split_weights = true)
+	target_weights = [0.25,0.25,3,0.25,0.25,4,2]
+	standard_gird_tests(grid,target_centers,target_volumes,target_weights)
+
+
+	# Test default block variation (should replace all blocks).
 	grid = named_2d_grid()
 	refine!(grid)
 	@test !("b_top_left" in collect(keys(grid))) && !("a_top_right" in collect(keys(grid))) && !("y_bottom_left" in collect(keys(grid))) && !("x_bottom_right" in collect(keys(grid)))

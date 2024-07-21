@@ -54,10 +54,10 @@ end
 
 
 """
-	export_all(grid)
-Return one-dimensional arrays: `centers, volumes, weights`.
+	export_all(grid::Union{OneDimGrid,Grid})
+Return the vectors: `centers, volumes, weights`.
 
-The arrays are sorted and exported by centers.
+The vector elements are sorted according to the center points of the intervals/blocks.
 """
 function export_all(grid::Union{OneDimGrid,Grid})
 	grid_keys = collect(keys(grid))
@@ -71,10 +71,10 @@ end
 
 
 """
-	export_weights(grid)
-Return a one-dim array containing the weights of the intervals/blocks.
+	export_weights(grid::Union{OneDimGrid,Grid})
+Return a vector that contains the weights of the intervals/blocks.
 
-The intervals/blocks are sorted by their centers. The weights are exported in this order.
+The weights are sorted according to the center points of the intervals/blocks.
 """
 function export_weights(grid::Union{OneDimGrid,Grid})
 	return export_all(grid)[3]
@@ -84,10 +84,10 @@ end
 
 
 """
-	import_weights!(grid, weights)
+	import_weights!(grid::Union{OneDimGrid,Grid}, weights)
 Import weights and return the mutated grid.
 
-The intervals/blocks are sorted by their centers. The weights are imported in this order.
+For the import, the intervals/blocks are sorted according to their center points.
 """
 function import_weights!(grid::Union{OneDimGrid,Grid}, weights)
 	grid_keys = sort(collect(keys(grid)))

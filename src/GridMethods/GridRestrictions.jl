@@ -46,7 +46,7 @@ end
 	get_slice(grid::Grid, slice_selection)
 Return a grid of blocks (from `grid`) that intersect with a slice defined by `slice_selection`.
 
-For example: the y-axis is defined by `slice_selection = [0,nothing,0]`, the y-z-plane at `x = 5` is defined by `slice_selection = [5,nothing,nothing]`, etc..
+3-dim example: the y-axis is defined by `slice_selection = [0,nothing,0]`, the y-z-plane at `x = 5` is defined by `slice_selection = [5,nothing,nothing]`, etc..
 """
 function get_slice(grid::Grid, slice_selection)
 	slice_dimensions = [dim for dim in 1:length(slice_selection) if isnothing(slice_selection[dim])]
@@ -79,7 +79,7 @@ end
 
 """
 	select_indices(grid::OneDimGrid; lower::Real=-Inf,upper::Real=Inf)
-Return indices of intervals with centers between `lower` and `upper`. The indices correspond to the exported arrays `centers`, `volumes` and `weights` from [`export_weights`](@ref) and [`export_all`](@ref).
+Return indices of intervals with centers between `lower` and `upper`. The index order is the order of [`export_weights`](@ref) and [`export_all`](@ref)
 """
 function select_indices(grid::OneDimGrid; lower::Real=-Inf,upper::Real=Inf)
 	centers, volumes, weights = export_all(grid)
@@ -89,7 +89,7 @@ end
 
 """
 	select_indices(grid::Grid; lower= [-Inf,...,-Inf],upper=[Inf, ..., Inf])
-Return indices of intervals with centers between `lower` and `upper`. The indices correspond to the exported arrays `centers`, `volumes` and `weights` from [`export_weights`](@ref) and [`export_all`](@ref).
+Return indices of intervals with centers between `lower` and `upper`. The index order is the order of [`export_weights`](@ref) and [`export_all`](@ref).
 """
 function select_indices(grid::Grid; lower= [-Inf for i in 1:dimension(grid)],upper=[Inf for i in 1:dimension(grid)])
 	centers, volumes, weights = export_all(grid)
@@ -123,11 +123,16 @@ end
 
 
 """
-	restrict_domain!(grid::OneDimGrid; lower::Real = -Inf,upper::Real = Inf, weight_distribution::Symbol = :none)
-Restrict a grid to the domain defined by `lower` and `upper`.
+	restrict_domain!(grid::OneDimGrid; 
+		lower::Real = -Inf,
+		upper::Real = Inf, 
+		weight_distribution::Symbol = :none
+	)
 
-* `weight_distribution = :linear`: A split block gets the weight scaled to the proportion of the block within the domain.
-* `weight_distribution = :log`: A split block gets the weight scaled to the proportion of the block, in a logarithmic scale, within the domain.
+Restrict the domain of a grid to the domain defined by `lower` and `upper`.
+
+* `weight_distribution = :linear`: If a block gets split up, the weight is rescaled w.r.t. the proportion of the block within the domain.
+* `weight_distribution = :log`: If a block gets split up, the weight is rescaled w.r.t. the proportion of the block within the domain, as it appears in a logarithmically scaled plot.
 """
 function restrict_domain!(grid::OneDimGrid; lower::Real = -Inf,upper::Real = Inf, weight_distribution::Symbol = :none)
 	to_be_removed = String[]
@@ -187,11 +192,16 @@ end
 
 
 """
-	restrict_domain!(grid::Grid;lower = [-Inf,...,-Inf], upper = [Inf,...,Inf], weight_distribution::Symbol = :none)
-Restrict a grid to the domain defined by `lower` and `upper`.
+	restrict_domain!(grid::Grid;
+		lower = [-Inf,...,-Inf],
+		upper = [Inf,...,Inf],
+		weight_distribution::Symbol = :none
+	)
 
-* `weight_distribution = :linear`: A split block gets the weight scaled to the proportion of the block within the domain.
-* `weight_distribution = :log`: A split block gets the weight scaled to the proportion of the block, in a logarithmic scale, within the domain.
+Restrict the domain of a grid to the domain defined by `lower` and `upper`.
+
+* `weight_distribution = :linear`: If a block gets split up, the weight is rescaled w.r.t. the proportion of the block within the domain.
+* `weight_distribution = :log`: If a block gets split up, the weight is rescaled w.r.t. the proportion of the block within the domain, as it appears in a logarithmically scaled plot.
 """
 function restrict_domain!(grid::Grid;lower = [-Inf for i in 1:dimension(grid)], upper = [Inf for i in 1:dimension(grid)], weight_distribution::Symbol = :none)
 	to_be_removed = String[]

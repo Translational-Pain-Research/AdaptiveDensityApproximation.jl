@@ -27,7 +27,10 @@ end
 
 
 """
-	subdivide!(grid::Union{OneDimGrid,Grid},block_name::AbstractString; split_weights::Bool = false)
+	subdivide!(grid::Union{OneDimGrid,Grid},block_name::AbstractString; 
+		split_weights::Bool = false
+	)
+
 Split the block with name `block_name` into `2^dim` sub-blocks. Return the mutated grid.
 
 **Changing the weight splitting**
@@ -63,20 +66,34 @@ end
 
 
 """
-	refine!(grid::Union{OneDimGrid,Grid}; block_variation::Function = default_block_variation, selection::Function = maximum, split_weights::Bool = false)
-Subdivide intervals/blocks in a grid based on the respective variations. Return the mutated grid and the indices of subdivided (i.e. new) blocks (indices w.r.t arrays obtained from [`export_weights`](@ref) and [`export_all`](@ref)).
+	refine!(grid::Union{OneDimGrid,Grid}; 
+		block_variation::Function = default_block_variation, 
+		selection::Function = maximum, 
+		split_weights::Bool = false
+	)
 
-By default the variation of a block is the largest difference in weights w.r.t. to its neighbors. The blocks to be subdivided are those that have the largest variation. If several blocks have the same variation, all those blocks are subdivided.
+Subdivide intervals/blocks in a grid based on the respective variations. Return the mutated grid and the indices of subdivided (i.e. new) blocks (The index order is the order of [`export_weights`](@ref) and [`export_all`](@ref)).
+
+By default the variation of a block is the largest difference of weights compared to the weights of the neighboring blocks. The blocks to be subdivided are those that have the largest variation. If several blocks have the same variation, all those blocks are subdivided.
 
 **Changing the selection of blocks**
 
 * `block_variation`: Function to calculate the variation value for a block. Must use the following signature `(block_center,block_volume, block_weight, neighbor_center,neighbor_volumes, neighbor_weights)`.
-* `selection`: Function to select the appropriate variation value(s) from. Must have the signature `(variations)`  where variations is a one-dim array of the variation values.
+* `selection`: Function to select the the blocks based on the variation value. Must have the signature `(variations)`  where variations is a one-dim array of the variation values.
 
 
 **Changing the weight splitting**
 
 By default, the subdividing blocks retain the weight of the original block. If `split_weights = true`, the weight of the original block is split up evenly between the subdividing blocks (i.e. divided by the number of subdividing blocks).
+
+**Example**
+
+Select the block(s) with the smallest possible weight difference to its neighbors:
+```julia
+min_difference(c,v,w,C,V,W) = minimum(abs.(w .- W))
+refine!(grid, block_variation= min_difference, selection = minimum)
+```
+
 """
 function refine!(grid::Union{OneDimGrid,Grid}; block_variation::Function = default_block_variation, selection::Function = maximum, split_weights::Bool = false)
 	# Get centers before refinements.

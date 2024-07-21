@@ -61,7 +61,11 @@ end
 ####################################################################################################
 
 """
-	create_grid(axis_ticks::AbstractArray...;initial_weight = 1.0, exclude_strings = [""],string_length = 10)
+	create_grid(axis_ticks::AbstractArray...; 
+		initial_weight = 1.0, 
+		exclude_strings = [""], 
+		string_length = 10
+	)
 Create a multidimensional grid, where the `axis_ticks` define the corner points of the blocks.
 
 For each dimension a separate array of axis-ticks is required. Each axis-ticks array must have at least 3 elements.
@@ -69,8 +73,18 @@ For each dimension a separate array of axis-ticks is required. Each axis-ticks a
 **Keywords**
 
 * `initial_weight`: Initial weight for the blocks.
-* `exclude_strings`: Strings that should not be used for the block names / keys.
+* `exclude_strings`: Strings that will not be used for the block names / keys.
 * `string_length`: Length for the block names / keys.
+
+**Examples**
+
+```julia-repl
+julia> create_grid([1,2,3],[1,2,3],[1,2,3])
+```
+
+```julia-repl
+julia> create_grid(LinRange(0,1,10),LinRange(0,100,100))
+```
 """
 function create_grid(axis_ticks::AbstractArray...;initial_weight = 1.0, exclude_strings = [""],string_length = 10)
 	# The axis_ticks define the corner-points. To avoid special cases in in the 1-dim case, 3 corner points, i.e. 2 blocks are required.
@@ -120,7 +134,12 @@ end
 
 
 """
-	create_grid(axis_ticks::AbstractArray;initial_weight = 1.0, exclude_strings = [""],string_length = 10)
+	create_grid(axis_ticks::AbstractArray;
+		initial_weight = 1.0, 
+		exclude_strings = [""],
+		string_length = 10
+	)
+
 Create a one-dimensional grid where the `axis_ticks` define the start/end points of the intervals.
 
 There must be at least 3 elements in the axis_ticks array.
@@ -128,8 +147,18 @@ There must be at least 3 elements in the axis_ticks array.
 **Keywords**
 
 * `initial_weight`: Initial weight for the intervals.
-* `exclude_strings`: Strings that should not be used for the block names / keys.
+* `exclude_strings`: Strings that will not be used for the block names / keys.
 * `string_length`: Length for the block names / keys.
+
+**Examples**
+
+```julia-repl
+julia> create_grid([1,2,3,4])
+```
+
+```julia-repl
+julia> create_grid(LinRange(1,10,100))
+```
 """
 function create_grid(axis_ticks::AbstractArray;initial_weight = 1.0, exclude_strings = [""],string_length = 10)
 

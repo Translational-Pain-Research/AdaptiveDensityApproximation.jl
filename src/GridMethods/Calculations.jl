@@ -39,7 +39,12 @@ end
 ####################################################################################################
 
 """
-	sum(grid::Union{OneDimGrid, Grid}; lower = nothing, upper = nothing, weight_distribution::Symbol = :none)
+	sum(grid::Union{OneDimGrid, Grid}; 
+		lower = nothing, 
+		upper = nothing, 
+		weight_distribution::Symbol = :none
+	)
+
 Return the sum of all weights.
 
 * `lower`, `upper` and `weight_distribution` can be used to restrict the domain, similar to [`restrict_domain!`](@ref). This does not mutate the `grid`.
@@ -56,7 +61,12 @@ end
 
 
 """
-	sum(f::Function,grid::Union{OneDimGrid, Grid}; lower = nothing, upper = nothing, weight_distribution::Symbol = :none)
+	sum(f::Function,grid::Union{OneDimGrid, Grid}; 
+		lower = nothing, 
+		upper = nothing, 
+		weight_distribution::Symbol = :none
+	)
+
 Return the sum of `f(weight)` for all weights.
 
 * `lower`, `upper` and `weight_distribution` can be used to restrict the domain, similar to [`restrict_domain!`](@ref). This does not mutate the `grid`.
@@ -73,7 +83,12 @@ end
 
 
 """
-	prod(grid::Union{OneDimGrid, Grid}; lower = nothing, upper = nothing, weight_distribution::Symbol = :none)
+	prod(grid::Union{OneDimGrid, Grid}; 
+		lower = nothing,
+		upper = nothing,
+		weight_distribution::Symbol = :none
+	)
+
 Return the product of all weights.
 
 * `lower`, `upper` and `weight_distribution` can be used to restrict the domain, similar to [`restrict_domain!`](@ref). This does not mutate the `grid`.
@@ -90,7 +105,12 @@ end
 
 
 """
-	prod(f::Function,grid::Union{OneDimGrid, Grid}; lower = nothing, upper = nothing, weight_distribution::Symbol = :none)
+	prod(f::Function,grid::Union{OneDimGrid, Grid};
+		lower = nothing,
+		upper = nothing,
+		weight_distribution::Symbol = :none
+	)
+
 Return the product of `f(weight)` for all weights.
 
 * `lower`, `upper` and `weight_distribution` can be used to restrict the domain, similar to [`restrict_domain!`](@ref). This does not mutate the `grid`.
@@ -116,9 +136,9 @@ end
 
 """
 	integrate(grid)
-Return the sum of `volume × weight` for the intervals/blocks.
+Return the sum over all intervals/blocks of `volume × weight`.
 
-When the grid approximates a density `φ` with the weights of the intervals/blocks, `integrate(grid)` approximates the integral of the density over the grid domain: `∫_grid φ dV`.
+When the grid weights approximate a density `φ`, `integrate(grid)` approximates the integral of the density over the grid domain: `∫_grid φ dV`. This does not apply, if the gird weights already approximate the area/volume under the density (see `volume_normalization` for [`approximate_density!`](@ref)).
 """
 function integrate(grid::Union{OneDimGrid,Grid})
 	return sum(grid[key].weight * volume(grid[key]) for key in keys(grid))
@@ -128,19 +148,19 @@ end
 
 """
 	integral_model(grid,f::Function, g::Function = f)
-Create a model for the integral `∫_grid f(x,y,φ(y),...) dy`. Returns
+Create an approximation for the integral model `∫_grid f(x,y,φ(y),args...) dy`. Returns
 
-* model function: `(x,λ,args...) -> ∑_i block[i].volume × f(x,block[i].center,λ[i],args...)`
-* initial parameter based on block weights: `λ_0 = [block.weight for block in grid]`
-* components of the sum as array of functions: `[(x,λ,args...) -> block[i].volume × g(x,block[i].center,λ[i],args...) for i]`
+* the approximated model (function).
+* the grid weights as initial parameters (array).
+* individual block functions using `g` instead of `f` (array of functions).
 
-The functions `f` and `g` should have the arguments `(x,center,weight,args...)`.  
+Let the grid approximate the density `φ`. That is, the weight of blocks are characteristic density values for the blocks. For example, `λ_i = φ(c_i)` where `c_i` are the centers of the blocks. Furthermore let `V_i` denote the volumes of the blocks. Then:
 
-**Partial derivatives**
+* the returned approximated model is: `(x,λ,args...) -> ∑_i V_i ⋅ f(x,c_i,λ_i,...)`
+* the returned parameters are: `[λ_1,...,λ_n]`
+* the individual block functions are: `[(x,λ,args...) -> V_i ⋅ g(x,c_i,λ_i,...) for i = 1:number_of_blocks]`
 
-The optional function `g` can be used to obtain the partial derivatives of the model function w.r.t. `λ` as array of functions. For this, construct `g` such that
-
-	g(x,c,w) = ∂_w f(x,c,w)
+Using an optional integral kernel function `g`, allows to obtain modified functions for the individual blocks (if `g` is not provided the default case is `g=f`). The functions `f` and `g` should have the arguments `(x,center,weight,args...)`. This can be useful if one wants to obtain partial derivatives of the approximated model. For further details see [Advanced calculations: Integral models](@ref Advanced-calculations:-Integral-models) 
 """
 function integral_model(grid::Union{OneDimGrid,Grid},f::Function, g::Function = f)
 	centers,volumes, weights = export_all(grid)

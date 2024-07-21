@@ -14,8 +14,8 @@ function dimension(grid::OneDimGrid)
 end
 
 """
-	dimension(grid)
-Return the dimension of the grid. 
+	dimension(grid::Union{OneDimGrid,Grid})
+Return the dimension of the `grid`. 
 """
 function dimension(grid::Grid)
 	key_list = collect(keys(grid))
@@ -25,15 +25,19 @@ end
 
 
 """
-	approximate_density!(grid,f::Function; mode = :center, mesh_size = 4, volume_normalization = false)
-Approximate the density function `f` with the grid, changing the weights to the function values and return the mutated grid.
+	approximate_density!(grid::Union{OneDimGrid,Grid},f::Function; 
+		mode = :center,
+		mesh_size = 4,
+		volume_normalization = false
+	)
+	
+Approximate the density function `f` with the `grid`, changing the weights to the function values and return the mutated grid.
 
 * `mode = :center`: Evaluate the density function in the center of the interval/block.
 * `mode = :mean`: Evaluate the density function at all corner points of the interval/block and use the mean value.
 * `mode = :mesh`: Evaluate the density function at all mesh points of the interval/block and use the mean value.
 * `mesh_size = 4`: Number of block discretization points in each dimension. Only applicable to `mode = :mesh`.
-
-* `volume_normalization = false`: If `true` the density value is normalized to the block volume (`weight = value × volume`).
+* `volume_normalization = false`: If `true` the density value is normalized to the interval length / block volume (`weight = value × volume`).
 """
 function approximate_density!(grid::Union{OneDimGrid,Grid},f::Function; mode = :center, mesh_size::Integer = 4, volume_normalization::Bool = false)
 	for block in values(grid)
@@ -58,7 +62,7 @@ end
 
 
 """
-	get_pdf(grid;normalize::Bool = true)
+	get_pdf(grid::Union{OneDimGrid,Grid}; normalize::Bool = true)
 Return the discrete empirical pdf function of a grid. For this, the grid is understood as histogram, where the blocks are the bins, and the weights are the corresponding values. If `normalize = true` the values are normalized s.t. the sum of all values is 1.
 """
 function get_pdf(grid::Union{OneDimGrid,Grid};normalize::Bool = true)
@@ -89,7 +93,7 @@ end
 
 
 """
-	get_cdf(grid;normalize::Bool = true)
+	get_cdf(grid::Union{OneDimGrid,Grid};normalize::Bool = true)
 Return the discrete empirical cdf function of a grid. For this, the grid is understood as histogram, where the blocks are the bins, and the weights are the corresponding values. If `normalize = true` the values are normalized s.t. the sum of all values is 1.
 """
 function get_cdf(grid::Union{OneDimGrid,Grid};normalize::Bool = true)

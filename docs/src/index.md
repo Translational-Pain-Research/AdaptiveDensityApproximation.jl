@@ -12,10 +12,10 @@ The package can be installed with the following commands
 ```julia
 using Pkg
 Pkg.Registry.add()
-Pkg.Registry.add(RegistrySpec(url = "https://github.com/Translational-Pain-Research/Translational-Pain-ResearchRegistry"))
+Pkg.Registry.add(RegistrySpec(url = "https://github.com/Translational-Pain-Research/Translational-Pain-Julia-Registry"))
 Pkg.add("AdaptiveDensityApproximation")
 ```
-Since the package is not part of the `General` registry the commands install the additional registry `Translational-Pain-ResearchRegistry` first.
+Since the package is not part of the `General` registry the commands install the additional registry `Translational-Pain-Julia-Registry` first.
 
 After the installation, the package can be used like any other package:
 ```@example 1
@@ -24,7 +24,7 @@ using AdaptiveDensityApproximation
 In the following, the methods of this package are illustrated with simple, 1-dimensional examples. For a full documentation of the methods, see the [API](api.md)
 
 !!! tip "Tip: Plotting grids"
-	This package does not include any plotting methods, to reduce the dependencies. However, the [`AdaptiveDensityApproximationRecipes.jl`](https://github.com/Translational-Pain-Research/AdaptiveDensityApproximationRecipes.jl) contains plotting recipes for [`Plots.jl`](https://docs.juliaplots.org/stable/). Assuming that the `Translational-Pain-ResearchRegistry` is installed, the package can be installed like any other package:
+	This package does not include any plotting methods, to reduce the dependencies. However, the [`AdaptiveDensityApproximationRecipes.jl`](https://github.com/Translational-Pain-Research/AdaptiveDensityApproximationRecipes.jl) contains plotting recipes for [`Plots.jl`](https://docs.juliaplots.org/stable/). Assuming that the `Translational-Pain-Julia-Registry` is installed, the package can be installed like any other package:
 	```julia
 	using Pkg
 	Pkg.add("AdaptiveDensityApproximationRecipes")

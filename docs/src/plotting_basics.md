@@ -1,17 +1,17 @@
 # Plotting grids
 
-[`AdaptiveDensityApproximationRecipes.jl`](https://github.com/AntibodyPackages/AdaptiveDensityApproximationRecipes.jl) defines plotting recipes for [`Plots.jl`](https://docs.juliaplots.org/stable/), providing simple visualizations for 2-dim `Grid` objects and `OneDimGrid` objects.
+[`AdaptiveDensityApproximationRecipes.jl`](https://github.com/Translational-Pain-Research/AdaptiveDensityApproximationRecipes.jl) defines plotting recipes for [`Plots.jl`](https://docs.juliaplots.org/stable/), providing simple visualizations for 2-dim `Grid` objects and `OneDimGrid` objects.
 
-If the registry `AntibodyPackagesRegistry` is installed, `AdaptiveDensityApproximationRecipes.jl` can be installed like any other package
+If the registry `Translational-Pain-ResearchRegistry` is installed, `AdaptiveDensityApproximationRecipes.jl` can be installed like any other package
 ```julia
 using Pkg
 Pkg.add("AdaptiveDensityApproximationRecipes")
 ```
-Otherwise, install the `AntibodyPackagesRegistry` first
+Otherwise, install the `Translational-Pain-ResearchRegistry` first
 ```julia
 using Pkg
 Pkg.Registry.add()
-Pkg.Registry.add(RegistrySpec(url = "https://github.com/AntibodyPackages/AntibodyPackagesRegistry"))
+Pkg.Registry.add(RegistrySpec(url = "https://github.com/Translational-Pain-Research/Translational-Pain-ResearchRegistry"))
 ```
 
 To illustrate the plotting of grids, a `OneDimGrid` object and a `Grid` object need to be constructed
